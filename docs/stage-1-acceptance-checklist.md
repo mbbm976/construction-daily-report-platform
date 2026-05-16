@@ -9,55 +9,75 @@ Stage 1 is focused on database, security, storage, audit, and approval workflow 
 - [x] .env.example created
 - [x] supabase/migrations folder created
 - [x] Stage 1 SQL migration file created
-- [ ] docs folder created
+- [x] docs folder created
 
 ## Supabase Database
 
-- [ ] Supabase project created
-- [ ] pgcrypto extension included
-- [ ] Enum types created
-- [ ] Core tables created
-- [ ] Detail report tables created
-- [ ] Unique constraints added
-- [ ] Check constraints added
+- [x] Supabase project created
+- [x] pgcrypto extension included
+- [x] Enum types created
+- [x] Core tables created
+- [x] Detail report tables created
+- [x] Unique constraints added
+- [x] Check constraints added
+- [x] Demo organization inserted
+- [x] Demo project inserted
 
 ## Security
 
-- [ ] Row Level Security enabled on all required tables
-- [ ] current_org_id() helper function created
-- [ ] is_project_member() helper function created
-- [ ] has_project_role() helper function created
-- [ ] Helper functions use security definer
-- [ ] Helper functions use set search_path = public
+- [x] Row Level Security enabled on all required tables
+- [x] current_org_id() helper function created
+- [x] is_project_member() helper function created
+- [x] has_project_role() helper function created
+- [x] is_report_member() helper function created
+- [x] can_edit_report_detail() helper function created
+- [x] Helper functions use security definer
+- [x] Helper functions use set search_path = public
 
 ## Approval Workflow
 
-- [ ] submit_report() RPC created
-- [ ] return_report() RPC created
-- [ ] approve_report_by_pm() RPC created
-- [ ] approve_report_by_client() RPC created
-- [ ] archive_report() RPC created
-- [ ] Approval logs are insert-only
-- [ ] Client approved report is locked
+- [x] submit_report() RPC created
+- [x] return_report() RPC created
+- [x] approve_report_by_pm() RPC created
+- [x] approve_report_by_client() RPC created
+- [x] archive_report() RPC created
+- [x] Approval logs are insert-only
+- [x] Client approved report is locked
 
 ## Storage
 
-- [ ] Private bucket design prepared
-- [ ] daily-report-files bucket planned
-- [ ] Project-based file path format defined
-- [ ] Only project members can read/upload files
+- [x] Private bucket design prepared
+- [x] daily-report-files bucket created
+- [x] Storage bucket confirmed as private
+- [x] Project-based file path format defined
+- [x] Only project members can read/upload files
+- [x] Storage read policy created
+- [x] Storage upload policy created
 
 ## Audit
 
-- [ ] audit_logs table created
-- [ ] audit trigger function created
-- [ ] Audit triggers attached to key tables
+- [x] audit_logs table created
+- [x] audit trigger function created
+- [x] Audit triggers attached to key tables
 
-## Final Validation
+## Verification Completed
 
-- [ ] Non-project member cannot view project reports
-- [ ] Site engineer can create draft report
-- [ ] Submitted report cannot be edited directly
-- [ ] Project manager can approve or return submitted report
-- [ ] Client representative can final approve PM-approved report
-- [ ] Locked report cannot be edited
+- [x] Public tables verified in Table Editor
+- [x] RLS verified as true on public tables
+- [x] Storage bucket verified with public = false
+- [x] Approval RPC functions verified
+- [x] Storage policies verified
+- [x] Demo organization verified
+- [x] Demo project verified
+
+## Remaining Stage 1 Hardening Tests
+
+- [ ] Create real test users
+- [ ] Insert test profiles
+- [ ] Assign users to project_members
+- [ ] Test RLS with site engineer user
+- [ ] Test RLS with project manager user
+- [ ] Test RLS with client representative user
+- [ ] Test report submit → PM approval → client approval workflow
+- [ ] Test locked report cannot be edited
+- [ ] Test storage upload with project-based folder path
