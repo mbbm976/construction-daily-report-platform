@@ -1,26 +1,34 @@
-# 🏗️ Өдөр тутмын тайлан — Барилгын удирдлагын систем
+# Construction Daily Report & Site Control Platform
 
-Барилгын талбайн өдөр тутмын тайлангийн professional prototype систем.
+This repository contains the development foundation for a production-oriented Construction Daily Report & Site Control Platform.
 
-## Технологи
-- React 18
-- localStorage (client-side storage)
-- SheetJS (Excel export)
-- Inline CSS/CSS-in-JS
+## Purpose
 
-## Суулгах
-```bash
-npm install
-npm start
-```
+The platform is designed to manage construction daily reports, site progress, HSE records, QA/QC evidence, issues, delays, action tracking, photos, signatures, approvals, dashboards, and exports.
 
-## Байршуулах
-```bash
-npm run build
-```
+## Stage 1 Focus
 
-## ⚠️ Анхааруулга
-Энэ нь **prototype/demo** систем бөгөөд:
-- localStorage дээр суурилсан (зөвхөн тухайн browser/device)
-- Backend, database, authentication server байхгүй
-- Production хувилбарт backend шаардлагатай
+Stage 1 focuses only on:
+
+- Supabase database schema
+- PostgreSQL security foundation
+- Row Level Security policies
+- Role-based access control
+- Approval workflow
+- Audit logs
+- Storage policy design
+
+Frontend development will start only after Stage 1 is reviewed and approved.
+
+## Technology Stack
+
+- React + TypeScript + Vite
+- Supabase Auth
+- Supabase PostgreSQL
+- Supabase Storage
+- Netlify Free hosting
+- GitHub source control
+
+## Important Security Note
+
+Do not commit real passwords, API secret keys, Supabase service role keys, or production environment values into this repository.
