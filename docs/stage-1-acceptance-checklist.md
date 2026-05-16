@@ -1,5 +1,3 @@
-<img width="1880" height="952" alt="image" src="https://github.com/user-attachments/assets/498eb089-3014-4589-b7ce-473a57b531f7" /># Stage 1 Acceptance Checklist
-
 Stage 1 is focused on database, security, storage, audit, and approval workflow foundation.
 
 ## Repository Setup
