@@ -1,6 +1,6 @@
-Stage 1 is focused on database, security, storage, audit, and approval workflow foundation.
+# Stage 1 Acceptance Checklist
 
-## Repository Setup
+Stage 1 is focused on database, security, storage, audit, and approval workflow foundation.
 
 - [x] GitHub repository created
 - [x] README.md created
