@@ -1,4 +1,4 @@
-# Stage 1 Acceptance Checklist
+<img width="1880" height="952" alt="image" src="https://github.com/user-attachments/assets/498eb089-3014-4589-b7ce-473a57b531f7" /># Stage 1 Acceptance Checklist
 
 Stage 1 is focused on database, security, storage, audit, and approval workflow foundation.
 
@@ -72,12 +72,35 @@ Stage 1 is focused on database, security, storage, audit, and approval workflow 
 
 ## Remaining Stage 1 Hardening Tests
 
-- [ ] Create real test users
-- [ ] Insert test profiles
-- [ ] Assign users to project_members
-- [ ] Test RLS with site engineer user
-- [ ] Test RLS with project manager user
-- [ ] Test RLS with client representative user
-- [ ] Test report submit → PM approval → client approval workflow
-- [ ] Test locked report cannot be edited
-- [ ] Test storage upload with project-based folder path
+- [x] Create real test users
+- [x] Insert test profiles
+- [x] Assign users to project_members
+- [x] Test RLS with site engineer user
+- [x] Test RLS with project manager user
+- [x] Test RLS with client representative user
+- [x] Test report submit → PM approval → client approval workflow
+- [x] Test locked report cannot be edited
+- [x] Test storage upload with project-based folder path
+## Stage 1 Verification Result
+
+Stage 1 backend foundation has been tested successfully.
+
+Verified results:
+
+- Supabase project was created successfully.
+- Public database tables were created successfully.
+- Row Level Security was enabled on all public tables.
+- Private storage bucket was confirmed with `public = false`.
+- Storage read and upload policies were verified.
+- Demo organization and demo project were created successfully.
+- Test users were created for Site Engineer, Project Manager, and Client Representative roles.
+- Test user profiles were inserted successfully.
+- Users were assigned to the project through `project_members`.
+- Draft daily report was created successfully.
+- Completeness score validation was tested and confirmed.
+- Report submission workflow was tested successfully.
+- Project Manager approval workflow was tested successfully.
+- Client Representative final approval workflow was tested successfully.
+- Approval history was recorded correctly in `approval_logs`.
+
+Stage 1 is accepted as the backend foundation for the Construction Daily Report & Site Control Platform.
