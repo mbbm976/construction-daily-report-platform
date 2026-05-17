@@ -1,0 +1,208 @@
+import { useState } from 'react'
+import {
+  initialDailyReportFormData,
+  type DailyReportFormData,
+} from '../types/dailyReport'
+
+function DailyReportFormPage() {
+  const [formData, setFormData] = useState<DailyReportFormData>(
+    initialDailyReportFormData
+  )
+
+  const updateField = (
+    field: keyof DailyReportFormData,
+    value: string | number
+  ) => {
+    setFormData((current) => ({
+      ...current,
+      [field]: value,
+    }))
+  }
+
+  const handleSaveDraft = () => {
+    setFormData((current) => ({
+      ...current,
+      status: 'draft',
+    }))
+
+    console.log('Draft report:', {
+      ...formData,
+      status: 'draft',
+    })
+  }
+
+  const handleSubmitReport = () => {
+    setFormData((current) => ({
+      ...current,
+      status: 'submitted',
+    }))
+
+    console.log('Submitted report:', {
+      ...formData,
+      status: 'submitted',
+    })
+  }
+
+  return (
+    <main className="min-h-screen bg-slate-50 p-6">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-6">
+          <p className="text-sm font-medium text-blue-600">
+            Барилгын өдөр тутмын тайлан
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-slate-900">
+            Өдөр тутмын тайлангийн форм
+          </h1>
+          <p className="mt-2 text-slate-600">
+            Талбайн өдөр тутмын ажил, хүн хүч, тоног төхөөрөмж, ХАБЭА ажиглалт болон тайлангийн төлөвийг бүртгэнэ.
+          </p>
+        </div>
+
+        <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Огноо
+              </label>
+              <input
+                type="date"
+                value={formData.reportDate}
+                onChange={(event) => updateField('reportDate', event.target.value)}
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Төсөл / site нэр
+              </label>
+              <input
+                type="text"
+                value={formData.projectSiteName}
+                onChange={(event) => updateField('projectSiteName', event.target.value)}
+                placeholder="Жишээ: Оюу Толгой - Барилгын талбай"
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Бэлтгэсэн ажилтан
+              </label>
+              <input
+                type="text"
+                value={formData.preparedBy}
+                onChange={(event) => updateField('preparedBy', event.target.value)}
+                placeholder="Ажилтны нэр"
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Ажилласан хүн хүч
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={formData.manpowerCount}
+                onChange={(event) =>
+                  updateField('manpowerCount', Number(event.target.value))
+                }
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Хийгдсэн ажил
+              </label>
+              <textarea
+                value={formData.workCompleted}
+                onChange={(event) => updateField('workCompleted', event.target.value)}
+                rows={4}
+                placeholder="Өнөөдөр хийгдсэн үндсэн ажлуудыг бичнэ үү."
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Аюулгүй ажиллагааны ажиглалт
+              </label>
+              <textarea
+                value={formData.safetyObservation}
+                onChange={(event) =>
+                  updateField('safetyObservation', event.target.value)
+                }
+                rows={4}
+                placeholder="Hazard, near miss, toolbox talk, permit, corrective action гэх мэт мэдээлэл."
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Тоног төхөөрөмж
+              </label>
+              <textarea
+                value={formData.equipment}
+                onChange={(event) => updateField('equipment', event.target.value)}
+                rows={3}
+                placeholder="Ашигласан тоног төхөөрөмж, эвдрэл саатал, сул зогсолт."
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Зураг / хавсралт
+              </label>
+              <input
+                type="text"
+                value={formData.attachmentNote}
+                onChange={(event) => updateField('attachmentNote', event.target.value)}
+                placeholder="Дараагийн шатанд file upload холбох тул одоогоор тэмдэглэл бичнэ."
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Тайлангийн төлөв
+              </label>
+              <select
+                value={formData.status}
+                onChange={(event) => updateField('status', event.target.value)}
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              >
+                <option value="draft">Draft</option>
+                <option value="submitted">Submit</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 hover:bg-slate-100"
+            >
+              Draft хадгалах
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSubmitReport}
+              className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+            >
+              Submit хийх
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  )
+}
+
+export default DailyReportFormPage
