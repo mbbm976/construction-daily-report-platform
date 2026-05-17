@@ -1,0 +1,19 @@
+{
+  "appName": "Барилгын Өдөр Тутмын Тайлан",
+  "subtitle": "Талбайн хяналт ба тайлангийн платформ",
+  "dashboard": "Хяналтын самбар",
+  "reports": "Өдөр тутмын тайлан",
+  "projects": "Төслүүд",
+  "approvals": "Баталгаажуулалт",
+  "settings": "Тохиргоо",
+  "welcomeTitle": "Тавтай морилно уу",
+  "welcomeText": "Энэ платформ нь барилгын өдөр тутмын тайлан, талбайн явц, ХАБЭА, QA/QC, зураг, баталгаажуулалт болон экспортын үйл явцыг удирдахад зориулагдсан.",
+  "stage": "Stage 2 Frontend эхэллээ",
+  "language": "Хэл",
+  "mongolian": "Монгол",
+  "english": "English",
+  "status": "Төлөв",
+  "backendReady": "Backend foundation бэлэн",
+  "frontendStarted": "Frontend хөгжүүлэлт эхэлсэн",
+  "bilingualReady": "Хос хэлний суурь бэлэн"
+}

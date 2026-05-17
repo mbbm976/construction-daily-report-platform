@@ -1,0 +1,19 @@
+{
+  "appName": "Construction Daily Report",
+  "subtitle": "Site Control and Reporting Platform",
+  "dashboard": "Dashboard",
+  "reports": "Daily Reports",
+  "projects": "Projects",
+  "approvals": "Approvals",
+  "settings": "Settings",
+  "welcomeTitle": "Welcome",
+  "welcomeText": "This platform is designed to manage construction daily reports, site progress, HSE, QA/QC, photos, approvals, and export workflows.",
+  "stage": "Stage 2 Frontend Started",
+  "language": "Language",
+  "mongolian": "Mongolian",
+  "english": "English",
+  "status": "Status",
+  "backendReady": "Backend foundation ready",
+  "frontendStarted": "Frontend development started",
+  "bilingualReady": "Bilingual foundation ready"
+}
