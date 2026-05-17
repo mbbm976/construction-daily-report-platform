@@ -6,7 +6,7 @@ type AuthState = {
   user: User | null
   loading: boolean
   error: string | null
-  initializeAuth: () => Promise<void>
+  initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
 }
@@ -16,7 +16,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
   error: null,
 
-  initializeAuth: async () => {
+  initialize: async () => {
     set({ loading: true, error: null })
 
     const { data, error } = await supabase.auth.getUser()
@@ -26,7 +26,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       return
     }
 
-    set({ user: data.user, loading: false, error: null })
+    set({ user: data.user ?? null, loading: false, error: null })
   },
 
   signIn: async (email: string, password: string) => {
@@ -38,21 +38,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     })
 
     if (error) {
-      set({ user: null, loading: false, error: error.message })
-      return
+      set({ loading: false, error: error.message })
+      throw error
     }
 
-    set({ user: data.user, loading: false, error: null })
+    set({ user: data.user ?? null, loading: false, error: null })
   },
 
   signOut: async () => {
-    set({ loading: true, error: null })
-
     const { error } = await supabase.auth.signOut()
 
     if (error) {
-      set({ loading: false, error: error.message })
-      return
+      set({ error: error.message })
+      throw error
     }
 
     set({ user: null, loading: false, error: null })
