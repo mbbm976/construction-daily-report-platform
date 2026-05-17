@@ -7,8 +7,9 @@ type AuthState = {
   loading: boolean
   error: string | null
   initialize: () => Promise<void>
-  signIn: (email: string, password: string) => Promise<void>
+  signIn: (email: string, password: string) => Promise<boolean>
   signOut: () => Promise<void>
+  clearError: () => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -19,14 +20,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   initialize: async () => {
     set({ loading: true, error: null })
 
-    const { data, error } = await supabase.auth.getUser()
+    const { data } = await supabase.auth.getSession()
 
-    if (error) {
-      set({ user: null, loading: false, error: error.message })
-      return
-    }
+    set({
+      user: data.session?.user ?? null,
+      loading: false,
+      error: null,
+    })
 
-    set({ user: data.user ?? null, loading: false, error: null })
+    supabase.auth.onAuthStateChange((_event, session) => {
+      set({
+        user: session?.user ?? null,
+        loading: false,
+        error: null,
+      })
+    })
   },
 
   signIn: async (email: string, password: string) => {
@@ -38,21 +46,34 @@ export const useAuthStore = create<AuthState>((set) => ({
     })
 
     if (error) {
-      set({ loading: false, error: error.message })
-      throw error
+      set({
+        user: null,
+        loading: false,
+        error: 'Имэйл эсвэл нууц үг буруу байна.',
+      })
+      return false
     }
 
-    set({ user: data.user ?? null, loading: false, error: null })
+    set({
+      user: data.user,
+      loading: false,
+      error: null,
+    })
+
+    return true
   },
 
   signOut: async () => {
-    const { error } = await supabase.auth.signOut()
+    await supabase.auth.signOut()
 
-    if (error) {
-      set({ error: error.message })
-      throw error
-    }
+    set({
+      user: null,
+      loading: false,
+      error: null,
+    })
+  },
 
-    set({ user: null, loading: false, error: null })
+  clearError: () => {
+    set({ error: null })
   },
 }))
