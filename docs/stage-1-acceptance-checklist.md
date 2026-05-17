@@ -101,4 +101,14 @@ Verified results:
 - Client Representative final approval workflow was tested successfully.
 - Approval history was recorded correctly in `approval_logs`.
 
+## Stage 1C Hardening
+
+- [x] Stage 1C hardening migration file created
+- [x] Stage 1C hardening migration executed in Supabase
+- [x] profiles.role default changed to viewer
+- [x] add_project_member RPC created
+- [x] Project member access hardening completed
+- [x] Stage 1C migration committed to GitHub
+- [x] Stage 1C verification queries completed successfully
+
 Stage 1 is accepted as the backend foundation for the Construction Daily Report & Site Control Platform.
