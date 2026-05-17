@@ -111,4 +111,14 @@ Verified results:
 - [x] Stage 1C migration committed to GitHub
 - [x] Stage 1C verification queries completed successfully
 
+## Stage 1D Final Blockers
+
+- [x] Stage 1D final blockers migration file created
+- [x] Stage 1D final blockers migration executed in Supabase
+- [x] Direct report status update is blocked by trigger
+- [x] Direct approval_logs insert policy removed
+- [x] Workflow RPC functions remain the only valid approval path
+- [x] Stage 1D migration committed to GitHub
+- [x] Stage 1 is ready for Stage 2 frontend development
+
 Stage 1 is accepted as the backend foundation for the Construction Daily Report & Site Control Platform.
