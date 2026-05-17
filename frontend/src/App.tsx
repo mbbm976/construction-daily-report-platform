@@ -3,6 +3,7 @@ import { useAuthStore } from './stores/authStore'
 import { LoginPage } from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import DailyReportFormPage from './pages/DailyReportFormPage'
+import './App.css'
 
 type AppPage = 'dashboard' | 'dailyReportForm'
 
