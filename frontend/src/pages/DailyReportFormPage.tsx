@@ -1,15 +1,61 @@
 import { useState } from 'react'
 import { mapLegacyDailyReportFormToProductionDraft } from '../features/daily-reports/mappers/legacyDailyReportMapper'
-import { LegacyDailyReportFormSchema } from '../features/daily-reports/schemas/dailyReportSchema'
+import {
+  validateLegacyDailyReportFormData,
+  type LegacyDailyReportValidationResult,
+} from '../features/daily-reports/validation/legacyDailyReportValidation'
 import {
   initialDailyReportFormData,
   type DailyReportFormData,
 } from '../types/dailyReport'
 
+type ValidationFeedback = {
+  tone: 'warning' | 'error'
+  title: string
+  description: string
+  fieldErrors: LegacyDailyReportValidationResult['fieldErrors']
+  formErrors: string[]
+}
+
+const validationFieldLabels: Partial<
+  Record<keyof DailyReportFormData, string>
+> = {
+  reportDate: 'Огноо',
+  projectSiteName: 'Төсөл / site нэр',
+  preparedBy: 'Бэлтгэсэн ажилтан',
+  shiftType: 'Ээлж',
+  shiftStartTime: 'Ээлж эхлэх цаг',
+  shiftEndTime: 'Ээлж дуусах цаг',
+  weatherCondition: 'Цаг агаар',
+  weatherRemarks: 'Цаг агаарын тэмдэглэл',
+  manpowerCount: 'Ажилласан хүн хүч',
+  workCompleted: 'Хийгдсэн ажил',
+  safetyObservation: 'Аюулгүй ажиллагааны ажиглалт',
+  equipment: 'Тоног төхөөрөмж',
+  attachmentNote: 'Зураг / хавсралт',
+  status: 'Тайлангийн төлөв',
+}
+
+function getValidationErrorMessages(feedback: ValidationFeedback): string[] {
+  const fieldMessages = Object.entries(feedback.fieldErrors).flatMap(
+    ([field, messages]) =>
+      (messages ?? []).map((message) => {
+        const label =
+          validationFieldLabels[field as keyof DailyReportFormData] ?? field
+
+        return `${label}: ${message}`
+      })
+  )
+
+  return [...feedback.formErrors, ...fieldMessages]
+}
+
 function DailyReportFormPage() {
   const [formData, setFormData] = useState<DailyReportFormData>(
     initialDailyReportFormData
   )
+  const [validationFeedback, setValidationFeedback] =
+    useState<ValidationFeedback | null>(null)
 
   const updateField = (
     field: keyof DailyReportFormData,
@@ -19,17 +65,32 @@ function DailyReportFormPage() {
       ...current,
       [field]: value,
     }))
+    setValidationFeedback(null)
   }
 
-  const validateLegacyPayload = (payload: DailyReportFormData) => {
-    const validationResult = LegacyDailyReportFormSchema.safeParse(payload)
-
-    if (!validationResult.success) {
-      console.warn(
-        'Legacy daily report validation errors:',
-        validationResult.error.flatten().fieldErrors
-      )
+  const showValidationFeedback = (
+    validationResult: LegacyDailyReportValidationResult,
+    tone: ValidationFeedback['tone'],
+    title: string,
+    description: string
+  ) => {
+    if (validationResult.success) {
+      setValidationFeedback(null)
+      return
     }
+
+    setValidationFeedback({
+      tone,
+      title,
+      description,
+      fieldErrors: validationResult.fieldErrors,
+      formErrors: validationResult.formErrors,
+    })
+
+    console.warn('Legacy daily report validation errors:', {
+      fieldErrors: validationResult.fieldErrors,
+      formErrors: validationResult.formErrors,
+    })
   }
 
   const handleSaveDraft = () => {
@@ -38,7 +99,14 @@ function DailyReportFormPage() {
       status: 'draft',
     }
 
-    validateLegacyPayload(draftPayload)
+    const validationResult = validateLegacyDailyReportFormData(draftPayload)
+
+    showValidationFeedback(
+      validationResult,
+      'warning',
+      'Draft validation warning',
+      'Draft хадгалалт үргэлжилнэ. Submit хийхээс өмнө доорх мэдээллийг шалгана уу.'
+    )
 
     // Stage 2.3 migration visibility only: this mapped draft is not a
     // persisted DailyReport. Backend-generated organization, project, report
@@ -62,7 +130,18 @@ function DailyReportFormPage() {
       status: 'submitted',
     }
 
-    validateLegacyPayload(submittedPayload)
+    const validationResult = validateLegacyDailyReportFormData(submittedPayload)
+
+    showValidationFeedback(
+      validationResult,
+      'error',
+      'Submit validation blocked',
+      'Submit хийхийн өмнө доорх алдааг засна уу.'
+    )
+
+    if (!validationResult.success) {
+      return
+    }
 
     // Stage 2.3 migration visibility only: this mapped submission draft is not
     // a persisted DailyReport. Backend-generated organization, project, report
@@ -94,7 +173,8 @@ function DailyReportFormPage() {
             Өдөр тутмын тайлангийн форм
           </h1>
           <p className="mt-2 text-slate-600">
-            Талбайн өдөр тутмын ажил, хүн хүч, тоног төхөөрөмж, ХАБЭА ажиглалт болон тайлангийн төлөвийг бүртгэнэ.
+            Талбайн өдөр тутмын ажил, хүн хүч, тоног төхөөрөмж, ХАБЭА ажиглалт
+            болон тайлангийн төлөвийг бүртгэнэ.
           </p>
         </div>
 
@@ -107,7 +187,9 @@ function DailyReportFormPage() {
               <input
                 type="date"
                 value={formData.reportDate}
-                onChange={(event) => updateField('reportDate', event.target.value)}
+                onChange={(event) =>
+                  updateField('reportDate', event.target.value)
+                }
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </div>
@@ -119,7 +201,9 @@ function DailyReportFormPage() {
               <input
                 type="text"
                 value={formData.projectSiteName}
-                onChange={(event) => updateField('projectSiteName', event.target.value)}
+                onChange={(event) =>
+                  updateField('projectSiteName', event.target.value)
+                }
                 placeholder="Жишээ: Оюу Толгой - Барилгын талбай"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
@@ -132,7 +216,9 @@ function DailyReportFormPage() {
               <input
                 type="text"
                 value={formData.preparedBy}
-                onChange={(event) => updateField('preparedBy', event.target.value)}
+                onChange={(event) =>
+                  updateField('preparedBy', event.target.value)
+                }
                 placeholder="Ажилтны нэр"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
@@ -159,7 +245,9 @@ function DailyReportFormPage() {
               </label>
               <textarea
                 value={formData.workCompleted}
-                onChange={(event) => updateField('workCompleted', event.target.value)}
+                onChange={(event) =>
+                  updateField('workCompleted', event.target.value)
+                }
                 rows={4}
                 placeholder="Өнөөдөр хийгдсэн үндсэн ажлуудыг бичнэ үү."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -187,7 +275,9 @@ function DailyReportFormPage() {
               </label>
               <textarea
                 value={formData.equipment}
-                onChange={(event) => updateField('equipment', event.target.value)}
+                onChange={(event) =>
+                  updateField('equipment', event.target.value)
+                }
                 rows={3}
                 placeholder="Ашигласан тоног төхөөрөмж, эвдрэл саатал, сул зогсолт."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -201,7 +291,9 @@ function DailyReportFormPage() {
               <input
                 type="text"
                 value={formData.attachmentNote}
-                onChange={(event) => updateField('attachmentNote', event.target.value)}
+                onChange={(event) =>
+                  updateField('attachmentNote', event.target.value)
+                }
                 placeholder="Дараагийн шатанд file upload холбох тул одоогоор тэмдэглэл бичнэ."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
@@ -221,6 +313,27 @@ function DailyReportFormPage() {
               </select>
             </div>
           </div>
+
+          {validationFeedback ? (
+            <div
+              className={`mt-6 rounded-xl border p-4 text-sm ${
+                validationFeedback.tone === 'error'
+                  ? 'border-red-200 bg-red-50 text-red-800'
+                  : 'border-amber-200 bg-amber-50 text-amber-800'
+              }`}
+              role="alert"
+            >
+              <p className="font-semibold">{validationFeedback.title}</p>
+              <p className="mt-1">{validationFeedback.description}</p>
+              <ul className="mt-3 list-disc space-y-1 pl-5">
+                {getValidationErrorMessages(validationFeedback).map(
+                  (message) => (
+                    <li key={message}>{message}</li>
+                  )
+                )}
+              </ul>
+            </div>
+          ) : null}
 
           <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
             <button
