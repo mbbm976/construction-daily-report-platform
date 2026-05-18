@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { mapLegacyDailyReportFormToProductionDraft } from '../features/daily-reports/mappers/legacyDailyReportMapper'
+import { LegacyDailyReportFormSchema } from '../features/daily-reports/schemas/dailyReportSchema'
 import {
   initialDailyReportFormData,
   type DailyReportFormData,
@@ -19,28 +21,66 @@ function DailyReportFormPage() {
     }))
   }
 
+  const validateLegacyPayload = (payload: DailyReportFormData) => {
+    const validationResult = LegacyDailyReportFormSchema.safeParse(payload)
+
+    if (!validationResult.success) {
+      console.warn(
+        'Legacy daily report validation errors:',
+        validationResult.error.flatten().fieldErrors
+      )
+    }
+  }
+
   const handleSaveDraft = () => {
+    const draftPayload: DailyReportFormData = {
+      ...formData,
+      status: 'draft',
+    }
+
+    validateLegacyPayload(draftPayload)
+
+    // Stage 2.3 migration visibility only: this mapped draft is not a
+    // persisted DailyReport. Backend-generated organization, project, report
+    // number, entity metadata, and approval fields will be injected later by
+    // application/backend workflows.
+    const mappedProductionDraft =
+      mapLegacyDailyReportFormToProductionDraft(draftPayload)
+
     setFormData((current) => ({
       ...current,
       status: 'draft',
     }))
 
-    console.log('Draft report:', {
-      ...formData,
-      status: 'draft',
-    })
+    console.log('Draft report:', draftPayload)
+    console.log('Mapped production draft:', mappedProductionDraft)
   }
 
   const handleSubmitReport = () => {
+    const submittedPayload: DailyReportFormData = {
+      ...formData,
+      status: 'submitted',
+    }
+
+    validateLegacyPayload(submittedPayload)
+
+    // Stage 2.3 migration visibility only: this mapped submission draft is not
+    // a persisted DailyReport. Backend-generated organization, project, report
+    // number, entity metadata, and approval fields will be injected later by
+    // application/backend workflows.
+    const mappedProductionSubmissionDraft =
+      mapLegacyDailyReportFormToProductionDraft(submittedPayload)
+
     setFormData((current) => ({
       ...current,
       status: 'submitted',
     }))
 
-    console.log('Submitted report:', {
-      ...formData,
-      status: 'submitted',
-    })
+    console.log('Submitted report:', submittedPayload)
+    console.log(
+      'Mapped production submission draft:',
+      mappedProductionSubmissionDraft
+    )
   }
 
   return (
