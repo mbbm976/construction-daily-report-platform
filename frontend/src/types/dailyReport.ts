@@ -309,10 +309,8 @@ export type DailyReportFormData = {
   qualityChecks: QualityCheck[]
 }
 
-const today = new Date().toISOString().slice(0, 10)
-
-export const initialDailyReportFormData: DailyReportFormData = {
-  reportDate: today,
+export const createInitialDailyReportFormData = (): DailyReportFormData => ({
+  reportDate: new Date().toISOString().slice(0, 10),
   projectSiteName: '',
   preparedBy: '',
 
@@ -396,4 +394,7 @@ export const initialDailyReportFormData: DailyReportFormData = {
       remarks: '',
     },
   ],
-}
+})
+
+export const initialDailyReportFormData: DailyReportFormData =
+  createInitialDailyReportFormData()
