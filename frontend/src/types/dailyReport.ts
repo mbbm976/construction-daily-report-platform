@@ -395,6 +395,3 @@ export const createInitialDailyReportFormData = (): DailyReportFormData => ({
     },
   ],
 })
-
-export const initialDailyReportFormData: DailyReportFormData =
-  createInitialDailyReportFormData()
