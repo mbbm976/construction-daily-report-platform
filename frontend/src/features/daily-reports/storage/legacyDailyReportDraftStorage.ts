@@ -21,8 +21,17 @@ export type LegacyDailyReportDraftSnapshot = {
   warning?: string
 }
 
-const canUseLocalStorage = (): boolean =>
-  typeof window !== 'undefined' && typeof Storage !== 'undefined'
+const getLocalStorage = (): Storage | null => {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.localStorage ?? null
+  } catch {
+    return null
+  }
+}
 
 const normalizeDailyReportDraft = (
   data: Partial<DailyReportFormData>
@@ -30,21 +39,22 @@ const normalizeDailyReportDraft = (
   const initialDailyReportFormData = createInitialDailyReportFormData()
 
   return {
-  ...initialDailyReportFormData,
-  ...data,
-  manpower: {
-    ...initialDailyReportFormData.manpower,
-    ...data.manpower,
-  },
-  workItems: data.workItems ?? initialDailyReportFormData.workItems,
-  equipmentItems:
-    data.equipmentItems ?? initialDailyReportFormData.equipmentItems,
-  hse: {
-    ...initialDailyReportFormData.hse,
-    ...data.hse,
-  },
-  qualityChecks: data.qualityChecks ?? initialDailyReportFormData.qualityChecks,
-}
+    ...initialDailyReportFormData,
+    ...data,
+    manpower: {
+      ...initialDailyReportFormData.manpower,
+      ...data.manpower,
+    },
+    workItems: data.workItems ?? initialDailyReportFormData.workItems,
+    equipmentItems:
+      data.equipmentItems ?? initialDailyReportFormData.equipmentItems,
+    hse: {
+      ...initialDailyReportFormData.hse,
+      ...data.hse,
+    },
+    qualityChecks:
+      data.qualityChecks ?? initialDailyReportFormData.qualityChecks,
+  }
 }
 
 export const saveLegacyDailyReportDraft = (
@@ -56,7 +66,9 @@ export const saveLegacyDailyReportDraft = (
     data: normalizeDailyReportDraft(data),
   }
 
-  if (!canUseLocalStorage()) {
+  const localStorage = getLocalStorage()
+
+  if (!localStorage) {
     return {
       savedAt: snapshot.savedAt,
       data: snapshot.data,
@@ -66,7 +78,7 @@ export const saveLegacyDailyReportDraft = (
   }
 
   try {
-    window.localStorage.setItem(
+    localStorage.setItem(
       LEGACY_DAILY_REPORT_DRAFT_STORAGE_KEY,
       JSON.stringify(snapshot)
     )
@@ -91,11 +103,13 @@ export const saveLegacyDailyReportDraft = (
 export const loadLegacyDailyReportDraft = ():
   | LegacyDailyReportDraftSnapshot
   | null => {
-  if (!canUseLocalStorage()) {
+  const localStorage = getLocalStorage()
+
+  if (!localStorage) {
     return null
   }
 
-  const storedValue = window.localStorage.getItem(
+  const storedValue = localStorage.getItem(
     LEGACY_DAILY_REPORT_DRAFT_STORAGE_KEY
   )
 
@@ -128,9 +142,11 @@ export const loadLegacyDailyReportDraft = ():
 }
 
 export const clearLegacyDailyReportDraft = () => {
-  if (!canUseLocalStorage()) {
+  const localStorage = getLocalStorage()
+
+  if (!localStorage) {
     return
   }
 
-  window.localStorage.removeItem(LEGACY_DAILY_REPORT_DRAFT_STORAGE_KEY)
+  localStorage.removeItem(LEGACY_DAILY_REPORT_DRAFT_STORAGE_KEY)
 }
