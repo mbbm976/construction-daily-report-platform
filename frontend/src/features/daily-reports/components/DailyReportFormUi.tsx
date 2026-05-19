@@ -63,8 +63,8 @@ export function ValidationFeedbackBanner({
       <p className="font-semibold">{title}</p>
       <p className="mt-1">{description}</p>
       <ul className="mt-3 list-disc space-y-1 pl-5">
-        {messages.map((message) => (
-          <li key={message}>{message}</li>
+        {messages.map((message, index) => (
+          <li key={`${message}-${index}`}>{message}</li>
         ))}
       </ul>
     </div>

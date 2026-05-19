@@ -38,6 +38,18 @@ const mapLegacyStatusToProductionStatus = (
   return 'Draft'
 }
 
+const mergeSafetyNotes = (...notes: string[]): string | undefined => {
+  const mergedNotes = notes
+    .map((note) => note.trim())
+    .filter((note) => note.length > 0)
+
+  if (mergedNotes.length === 0) {
+    return undefined
+  }
+
+  return mergedNotes.join('\n')
+}
+
 /**
  * Stage 2.3 transitional bridge from the current Stage 2.1 local form model to
  * a production-oriented draft shape.
@@ -87,7 +99,7 @@ export const mapLegacyDailyReportFormToProductionDraft = (
   safetySummary: {
     incidentCount: input.hse.incidentOccurred === 'yes' ? 1 : 0,
     observationCount: input.safetyObservation.trim() ? 1 : 0,
-    notes: input.safetyObservation || input.hse.safetyObservation || undefined,
+    notes: mergeSafetyNotes(input.safetyObservation, input.hse.safetyObservation),
   },
   legacyNotes: {
     projectSiteName: input.projectSiteName,

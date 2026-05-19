@@ -10,7 +10,7 @@ import {
   type LegacyDailyReportValidationResult,
 } from '../features/daily-reports/validation/legacyDailyReportValidation'
 import {
-  initialDailyReportFormData,
+  createInitialDailyReportFormData,
   type DailyReportFormData,
 } from '../types/dailyReport'
 import {
@@ -67,7 +67,7 @@ function getValidationErrorMessages(feedback: ValidationFeedback): string[] {
 
 function DailyReportFormPage() {
   const [formData, setFormData] = useState<DailyReportFormData>(
-    initialDailyReportFormData
+    () => createInitialDailyReportFormData()
   )
   const [validationFeedback, setValidationFeedback] =
     useState<ValidationFeedback | null>(null)
@@ -161,10 +161,13 @@ function DailyReportFormPage() {
       status: 'draft',
     }))
     setDraftFeedback({
-      tone: 'success',
-      message: `Draft local browser storage-д хадгалагдлаа. Хадгалсан цаг: ${new Date(
-        savedDraft.savedAt
-      ).toLocaleString()}.`,
+      tone: savedDraft.persisted ? 'success' : 'info',
+      message: savedDraft.persisted
+        ? `Draft local browser storage-д хадгалагдлаа. Хадгалсан цаг: ${new Date(
+            savedDraft.savedAt
+          ).toLocaleString()}.`
+        : savedDraft.warning ??
+          'Local storage-д draft хадгалах боломжгүй байна.',
     })
 
     console.log('Draft report:', draftPayload)
