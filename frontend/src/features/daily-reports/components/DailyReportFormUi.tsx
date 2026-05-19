@@ -4,16 +4,34 @@ type DraftFeedbackTone = 'success' | 'info'
 type ValidationFeedbackTone = 'warning' | 'error'
 
 type FormFieldProps = {
+  id?: string
   label: string
   children: ReactNode
   fullWidth?: boolean
+  error?: string
+  required?: boolean
 }
 
-export function FormField({ label, children, fullWidth = false }: FormFieldProps) {
+export function FormField({
+  id,
+  label,
+  children,
+  fullWidth = false,
+  error,
+  required = false,
+}: FormFieldProps) {
   return (
     <div className={fullWidth ? 'md:col-span-2' : undefined}>
-      <label className="mb-2 block text-sm font-semibold text-slate-700">{label}</label>
+      <label htmlFor={id} className="mb-2 block text-sm font-semibold text-slate-700">
+        {label}
+        {required ? ' *' : ''}
+      </label>
       {children}
+      {id && error ? (
+        <p id={`${id}-error`} className="mt-1 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -32,6 +50,7 @@ export function DraftFeedbackBanner({ tone, message }: DraftFeedbackBannerProps)
           : 'border-blue-200 bg-blue-50 text-blue-800'
       }`}
       role="status"
+      aria-live="polite"
     >
       {message}
     </div>

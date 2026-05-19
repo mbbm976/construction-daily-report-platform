@@ -51,6 +51,14 @@ const validationFieldLabels: Partial<
   status: 'Тайлангийн төлөв',
 }
 
+
+function getFieldError(
+  fieldErrors: LegacyDailyReportValidationResult['fieldErrors'],
+  field: keyof DailyReportFormData
+): string | undefined {
+  return fieldErrors[field]?.[0]
+}
+
 function getValidationErrorMessages(feedback: ValidationFeedback): string[] {
   const fieldMessages = Object.entries(feedback.fieldErrors).flatMap(
     ([field, messages]) =>
@@ -72,6 +80,18 @@ function DailyReportFormPage() {
   const [validationFeedback, setValidationFeedback] =
     useState<ValidationFeedback | null>(null)
   const [draftFeedback, setDraftFeedback] = useState<DraftFeedback | null>(null)
+
+
+  const fieldErrors = validationFeedback?.fieldErrors ?? {}
+  const reportDateError = getFieldError(fieldErrors, 'reportDate')
+  const projectSiteNameError = getFieldError(fieldErrors, 'projectSiteName')
+  const preparedByError = getFieldError(fieldErrors, 'preparedBy')
+  const manpowerCountError = getFieldError(fieldErrors, 'manpowerCount')
+  const workCompletedError = getFieldError(fieldErrors, 'workCompleted')
+  const safetyObservationError = getFieldError(fieldErrors, 'safetyObservation')
+  const equipmentError = getFieldError(fieldErrors, 'equipment')
+  const attachmentNoteError = getFieldError(fieldErrors, 'attachmentNote')
+  const statusError = getFieldError(fieldErrors, 'status')
 
   useEffect(() => {
     const savedDraft = loadLegacyDailyReportDraft()
@@ -200,7 +220,7 @@ function DailyReportFormPage() {
     const mappedProductionSubmissionDraft =
       mapLegacyDailyReportFormToProductionDraft(submittedPayload)
 
-    clearLegacyDailyReportDraft()
+    clearLegacyDailyReportDraft(submittedPayload)
 
     setFormData((current) => ({
       ...current,
@@ -236,10 +256,13 @@ function DailyReportFormPage() {
 
         <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
           <div className="grid gap-5 md:grid-cols-2">
-            <FormField label="Огноо">
+            <FormField id="reportDate" label="Огноо" error={reportDateError}>
               <input
+                id="reportDate"
                 type="date"
                 value={formData.reportDate}
+                aria-invalid={Boolean(reportDateError)}
+                aria-describedby={reportDateError ? 'reportDate-error' : undefined}
                 onChange={(event) =>
                   updateField('reportDate', event.target.value)
                 }
@@ -247,10 +270,17 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Төсөл / site нэр">
+            <FormField
+              id="projectSiteName"
+              label="Төсөл / site нэр"
+              error={projectSiteNameError}
+            >
               <input
                 type="text"
                 value={formData.projectSiteName}
+                id="projectSiteName"
+                aria-invalid={Boolean(projectSiteNameError)}
+                aria-describedby={projectSiteNameError ? 'projectSiteName-error' : undefined}
                 onChange={(event) =>
                   updateField('projectSiteName', event.target.value)
                 }
@@ -259,10 +289,13 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Бэлтгэсэн ажилтан">
+            <FormField id="preparedBy" label="Бэлтгэсэн ажилтан" error={preparedByError}>
               <input
                 type="text"
                 value={formData.preparedBy}
+                id="preparedBy"
+                aria-invalid={Boolean(preparedByError)}
+                aria-describedby={preparedByError ? 'preparedBy-error' : undefined}
                 onChange={(event) =>
                   updateField('preparedBy', event.target.value)
                 }
@@ -271,11 +304,14 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Ажилласан хүн хүч">
+            <FormField id="manpowerCount" label="Ажилласан хүн хүч" error={manpowerCountError}>
               <input
                 type="number"
                 min="0"
                 value={formData.manpowerCount}
+                id="manpowerCount"
+                aria-invalid={Boolean(manpowerCountError)}
+                aria-describedby={manpowerCountError ? 'manpowerCount-error' : undefined}
                 onChange={(event) =>
                   updateField('manpowerCount', Number(event.target.value))
                 }
@@ -283,9 +319,12 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Хийгдсэн ажил" fullWidth>
+            <FormField id="workCompleted" label="Хийгдсэн ажил" fullWidth error={workCompletedError}>
               <textarea
                 value={formData.workCompleted}
+                id="workCompleted"
+                aria-invalid={Boolean(workCompletedError)}
+                aria-describedby={workCompletedError ? 'workCompleted-error' : undefined}
                 onChange={(event) =>
                   updateField('workCompleted', event.target.value)
                 }
@@ -295,9 +334,17 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Аюулгүй ажиллагааны ажиглалт" fullWidth>
+            <FormField
+              id="safetyObservation"
+              label="Аюулгүй ажиллагааны ажиглалт"
+              fullWidth
+              error={safetyObservationError}
+            >
               <textarea
                 value={formData.safetyObservation}
+                id="safetyObservation"
+                aria-invalid={Boolean(safetyObservationError)}
+                aria-describedby={safetyObservationError ? 'safetyObservation-error' : undefined}
                 onChange={(event) =>
                   updateField('safetyObservation', event.target.value)
                 }
@@ -307,9 +354,12 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Тоног төхөөрөмж" fullWidth>
+            <FormField id="equipment" label="Тоног төхөөрөмж" fullWidth error={equipmentError}>
               <textarea
                 value={formData.equipment}
+                id="equipment"
+                aria-invalid={Boolean(equipmentError)}
+                aria-describedby={equipmentError ? 'equipment-error' : undefined}
                 onChange={(event) =>
                   updateField('equipment', event.target.value)
                 }
@@ -319,10 +369,13 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Зураг / хавсралт" fullWidth>
+            <FormField id="attachmentNote" label="Зураг / хавсралт" fullWidth error={attachmentNoteError}>
               <input
                 type="text"
                 value={formData.attachmentNote}
+                id="attachmentNote"
+                aria-invalid={Boolean(attachmentNoteError)}
+                aria-describedby={attachmentNoteError ? 'attachmentNote-error' : undefined}
                 onChange={(event) =>
                   updateField('attachmentNote', event.target.value)
                 }
@@ -331,9 +384,12 @@ function DailyReportFormPage() {
               />
             </FormField>
 
-            <FormField label="Тайлангийн төлөв">
+            <FormField id="status" label="Тайлангийн төлөв" error={statusError}>
               <select
+                id="status"
                 value={formData.status}
+                aria-invalid={Boolean(statusError)}
+                aria-describedby={statusError ? 'status-error' : undefined}
                 onChange={(event) => updateField('status', event.target.value)}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               >
