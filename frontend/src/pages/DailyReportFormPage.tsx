@@ -13,6 +13,11 @@ import {
   initialDailyReportFormData,
   type DailyReportFormData,
 } from '../types/dailyReport'
+import {
+  DraftFeedbackBanner,
+  FormField,
+  ValidationFeedbackBanner,
+} from '../features/daily-reports/components/DailyReportFormUi'
 
 type ValidationFeedback = {
   tone: 'warning' | 'error'
@@ -228,10 +233,7 @@ function DailyReportFormPage() {
 
         <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
           <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Огноо
-              </label>
+            <FormField label="Огноо">
               <input
                 type="date"
                 value={formData.reportDate}
@@ -240,12 +242,9 @@ function DailyReportFormPage() {
                 }
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Төсөл / site нэр
-              </label>
+            <FormField label="Төсөл / site нэр">
               <input
                 type="text"
                 value={formData.projectSiteName}
@@ -255,12 +254,9 @@ function DailyReportFormPage() {
                 placeholder="Жишээ: Оюу Толгой - Барилгын талбай"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Бэлтгэсэн ажилтан
-              </label>
+            <FormField label="Бэлтгэсэн ажилтан">
               <input
                 type="text"
                 value={formData.preparedBy}
@@ -270,12 +266,9 @@ function DailyReportFormPage() {
                 placeholder="Ажилтны нэр"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Ажилласан хүн хүч
-              </label>
+            <FormField label="Ажилласан хүн хүч">
               <input
                 type="number"
                 min="0"
@@ -285,12 +278,9 @@ function DailyReportFormPage() {
                 }
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Хийгдсэн ажил
-              </label>
+            <FormField label="Хийгдсэн ажил" fullWidth>
               <textarea
                 value={formData.workCompleted}
                 onChange={(event) =>
@@ -300,12 +290,9 @@ function DailyReportFormPage() {
                 placeholder="Өнөөдөр хийгдсэн үндсэн ажлуудыг бичнэ үү."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Аюулгүй ажиллагааны ажиглалт
-              </label>
+            <FormField label="Аюулгүй ажиллагааны ажиглалт" fullWidth>
               <textarea
                 value={formData.safetyObservation}
                 onChange={(event) =>
@@ -315,12 +302,9 @@ function DailyReportFormPage() {
                 placeholder="Hazard, near miss, toolbox talk, permit, corrective action гэх мэт мэдээлэл."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Тоног төхөөрөмж
-              </label>
+            <FormField label="Тоног төхөөрөмж" fullWidth>
               <textarea
                 value={formData.equipment}
                 onChange={(event) =>
@@ -330,12 +314,9 @@ function DailyReportFormPage() {
                 placeholder="Ашигласан тоног төхөөрөмж, эвдрэл саатал, сул зогсолт."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Зураг / хавсралт
-              </label>
+            <FormField label="Зураг / хавсралт" fullWidth>
               <input
                 type="text"
                 value={formData.attachmentNote}
@@ -345,12 +326,9 @@ function DailyReportFormPage() {
                 placeholder="Дараагийн шатанд file upload холбох тул одоогоор тэмдэглэл бичнэ."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Тайлангийн төлөв
-              </label>
+            <FormField label="Тайлангийн төлөв">
               <select
                 value={formData.status}
                 onChange={(event) => updateField('status', event.target.value)}
@@ -359,41 +337,23 @@ function DailyReportFormPage() {
                 <option value="draft">Draft</option>
                 <option value="submitted">Submit</option>
               </select>
-            </div>
+            </FormField>
           </div>
 
           {draftFeedback ? (
-            <div
-              className={`mt-6 rounded-xl border p-4 text-sm ${
-                draftFeedback.tone === 'success'
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                  : 'border-blue-200 bg-blue-50 text-blue-800'
-              }`}
-              role="status"
-            >
-              {draftFeedback.message}
-            </div>
+            <DraftFeedbackBanner
+              tone={draftFeedback.tone}
+              message={draftFeedback.message}
+            />
           ) : null}
 
           {validationFeedback ? (
-            <div
-              className={`mt-6 rounded-xl border p-4 text-sm ${
-                validationFeedback.tone === 'error'
-                  ? 'border-red-200 bg-red-50 text-red-800'
-                  : 'border-amber-200 bg-amber-50 text-amber-800'
-              }`}
-              role="alert"
-            >
-              <p className="font-semibold">{validationFeedback.title}</p>
-              <p className="mt-1">{validationFeedback.description}</p>
-              <ul className="mt-3 list-disc space-y-1 pl-5">
-                {getValidationErrorMessages(validationFeedback).map(
-                  (message) => (
-                    <li key={message}>{message}</li>
-                  )
-                )}
-              </ul>
-            </div>
+            <ValidationFeedbackBanner
+              tone={validationFeedback.tone}
+              title={validationFeedback.title}
+              description={validationFeedback.description}
+              messages={getValidationErrorMessages(validationFeedback)}
+            />
           ) : null}
 
           <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
