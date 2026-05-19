@@ -1,5 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { mapLegacyDailyReportFormToProductionDraft } from '../features/daily-reports/mappers/legacyDailyReportMapper'
+import {
+  clearLegacyDailyReportDraft,
+  loadLegacyDailyReportDraft,
+  saveLegacyDailyReportDraft,
+} from '../features/daily-reports/storage/legacyDailyReportDraftStorage'
 import {
   validateLegacyDailyReportFormData,
   type LegacyDailyReportValidationResult,
@@ -15,6 +20,11 @@ type ValidationFeedback = {
   description: string
   fieldErrors: LegacyDailyReportValidationResult['fieldErrors']
   formErrors: string[]
+}
+
+type DraftFeedback = {
+  tone: 'success' | 'info'
+  message: string
 }
 
 const validationFieldLabels: Partial<
@@ -56,6 +66,29 @@ function DailyReportFormPage() {
   )
   const [validationFeedback, setValidationFeedback] =
     useState<ValidationFeedback | null>(null)
+  const [draftFeedback, setDraftFeedback] = useState<DraftFeedback | null>(null)
+
+  useEffect(() => {
+    const savedDraft = loadLegacyDailyReportDraft()
+
+    if (!savedDraft) {
+      return
+    }
+
+    const timerId = window.setTimeout(() => {
+      setFormData(savedDraft.data)
+      setDraftFeedback({
+        tone: 'info',
+        message: `Өмнөх draft сэргээгдлээ. Хадгалсан цаг: ${new Date(
+          savedDraft.savedAt
+        ).toLocaleString()}.`,
+      })
+    }, 0)
+
+    return () => {
+      window.clearTimeout(timerId)
+    }
+  }, [])
 
   const updateField = (
     field: keyof DailyReportFormData,
@@ -66,6 +99,7 @@ function DailyReportFormPage() {
       [field]: value,
     }))
     setValidationFeedback(null)
+    setDraftFeedback(null)
   }
 
   const showValidationFeedback = (
@@ -115,10 +149,18 @@ function DailyReportFormPage() {
     const mappedProductionDraft =
       mapLegacyDailyReportFormToProductionDraft(draftPayload)
 
+    const savedDraft = saveLegacyDailyReportDraft(draftPayload)
+
     setFormData((current) => ({
       ...current,
       status: 'draft',
     }))
+    setDraftFeedback({
+      tone: 'success',
+      message: `Draft local browser storage-д хадгалагдлаа. Хадгалсан цаг: ${new Date(
+        savedDraft.savedAt
+      ).toLocaleString()}.`,
+    })
 
     console.log('Draft report:', draftPayload)
     console.log('Mapped production draft:', mappedProductionDraft)
@@ -150,10 +192,16 @@ function DailyReportFormPage() {
     const mappedProductionSubmissionDraft =
       mapLegacyDailyReportFormToProductionDraft(submittedPayload)
 
+    clearLegacyDailyReportDraft()
+
     setFormData((current) => ({
       ...current,
       status: 'submitted',
     }))
+    setDraftFeedback({
+      tone: 'success',
+      message: 'Submit амжилттай боллоо. Local draft цэвэрлэгдлээ.',
+    })
 
     console.log('Submitted report:', submittedPayload)
     console.log(
@@ -313,6 +361,19 @@ function DailyReportFormPage() {
               </select>
             </div>
           </div>
+
+          {draftFeedback ? (
+            <div
+              className={`mt-6 rounded-xl border p-4 text-sm ${
+                draftFeedback.tone === 'success'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                  : 'border-blue-200 bg-blue-50 text-blue-800'
+              }`}
+              role="status"
+            >
+              {draftFeedback.message}
+            </div>
+          ) : null}
 
           {validationFeedback ? (
             <div
