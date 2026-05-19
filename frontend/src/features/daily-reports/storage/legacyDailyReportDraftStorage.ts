@@ -36,24 +36,24 @@ const getLocalStorage = (): Storage | null => {
 const normalizeDailyReportDraft = (
   data: Partial<DailyReportFormData>
 ): DailyReportFormData => {
-  const initialDailyReportFormData = createInitialDailyReportFormData()
+  const defaultFormData = createInitialDailyReportFormData()
 
   return {
-    ...initialDailyReportFormData,
+    ...defaultFormData,
     ...data,
     manpower: {
-      ...initialDailyReportFormData.manpower,
+      ...defaultFormData.manpower,
       ...data.manpower,
     },
-    workItems: data.workItems ?? initialDailyReportFormData.workItems,
+    workItems: data.workItems ?? defaultFormData.workItems,
     equipmentItems:
-      data.equipmentItems ?? initialDailyReportFormData.equipmentItems,
+      data.equipmentItems ?? defaultFormData.equipmentItems,
     hse: {
-      ...initialDailyReportFormData.hse,
+      ...defaultFormData.hse,
       ...data.hse,
     },
     qualityChecks:
-      data.qualityChecks ?? initialDailyReportFormData.qualityChecks,
+      data.qualityChecks ?? defaultFormData.qualityChecks,
   }
 }
 
